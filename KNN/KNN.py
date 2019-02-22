@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 
 def createDataSet():
-    group = array([[1.0,1.1],[1.0,1.0],[0,0],[0,0.1]])
+    group = array(  [ [1.0,1.1],[1.0,1.0],[0,0],[0,0.1] ]  )
     labels = ['A','A','B','B']
     return group, labels
 
@@ -21,20 +21,23 @@ def createDataSet():
 '''
 #the basic KNN algorithm
 def classify0(inX, dataSet, labels, k):
-    dataSetSize = dataSet.shape[0]
-    #print("dataSetSize",dataSetSize)
-    diffMat = tile(inX, (dataSetSize,1)) - dataSet
-    #print("diffMat",diffMat)
+    dataSetSize = dataSet.shape[0]  # (4*2 the shape of dataSet)
+    #print("dataSetSize",dataSet.shape)
+    diffMat = tile(inX, (dataSetSize,1)) - dataSet  #numpy.tile([0,0],(2,1))#在列方向上重复[0,0]1次，行2次,array([[0, 0],[0, 0]])
+    #print("diffMat",tile(inX, (dataSetSize,1)))
     sqDiffMat = diffMat**2
-    sqDistances = sqDiffMat.sum(axis=1)
+    sqDistances = sqDiffMat.sum(axis=1) #axis=1以后就是将一个矩阵的每一行向量相加
     distances = sqDistances**0.5
     sortedDistIndicies = distances.argsort() #argsort函数返回的是数组值从小到大的索引值
-    classCount={}          
+    #print("sortedDistIndicies",sortedDistIndicies)
+    classCount={}   #dirctionary
     # get the nearest K
     for i in range(k):
         voteIlabel = labels[sortedDistIndicies[i]]
-        classCount[voteIlabel] = classCount.get(voteIlabel,0) + 1
+        classCount[voteIlabel] = classCount.get(voteIlabel,0) + 1  #get('e', 0) tells python to look for the key 'e' in the dictionary. If it's not found it returns 0
+        #print("classCount",classCount)
     sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
+    #print("sortedClassCount",sortedClassCount)
     return sortedClassCount[0][0]
 
 # txt file to array
@@ -45,17 +48,17 @@ def file2matrix(filename):
     classLabelVector = []                       #prepare labels return   
     fr = open(filename)
     index = 0
-    for line in fr.readlines():
-        line = line.strip()
-        listFromLine = line.split('\t')
+    for line in fr.readlines(): #readlines() 方法用于读取所有行(直到结束符 EOF)并返回列表
+        line = line.strip()     #Python strip() 方法用于移除字符串头尾指定的字符（默认为空格或换行符）或字符序列
+        listFromLine = line.split('\t')  #Python split() 通过指定分隔符对字符串进行切片
         returnMat[index,:] = listFromLine[0:3]
         classLabelVector.append(int(listFromLine[-1]))
         index += 1
     return returnMat,classLabelVector
 
-#normalization
+#normalization  归一化数据
 def autoNorm(dataSet):
-    minVals = dataSet.min(0)
+    minVals = dataSet.min(0) #axis=0; 每列的最小值
     maxVals = dataSet.max(0)
     ranges = maxVals - minVals
     normDataSet = zeros(shape(dataSet))
@@ -68,7 +71,7 @@ def autoNorm(dataSet):
 #实验说明：预测约会对象对用户是否具有吸引力
 #the date test
 def datingClassTest():
-    hoRatio = 0.50      #hold out 10%
+    hoRatio = 0.10      #hold out 50%
     datingDataMat,datingLabels = file2matrix('datingTestSet.txt')       #load data setfrom file
     normMat, ranges, minVals = autoNorm(datingDataMat)
     m = normMat.shape[0]
@@ -86,9 +89,9 @@ def datingClassTest():
 #the classify a person based on inputs
 def classifyPerson():
 	resultList=['not at all','in small doses','in large doses']
-	percentTats=float(raw_input("percentage of time playing video game"))
-	ffile=float(raw_input("frequent"))
-	icecream=float(raw_input("ice cream"))
+	percentTats=float(raw_input("percentage of time playing video game?"))
+	ffile=float(raw_input("frequent flier miles earned per year ?"))
+	icecream=float(raw_input("ice cream consumed per year ?"))
 	datingDataMat,datingLabels = file2matrix('datingTestSet.txt')       #load data setfrom file
 	normMat, ranges, minVals = autoNorm(datingDataMat)
 	inArr=array([percentTats,ffile,icecream])
@@ -99,15 +102,16 @@ def classifyPerson():
 
 #####################################################################################################
 #kNN算法_手写识别实例
-
 def img2vector(filename):
-    returnVect = zeros((1,1024))
+    returnVect = zeros((1,1024)) #vector(1*1024)
     fr = open(filename)
-    for i in range(32):
+    for i in range(32):  # image 32*32
         lineStr = fr.readline()
+        #print("lineStr",lineStr)  #('lineStr', '00000000001111111111111111100000\r\n')
         for j in range(32):
             returnVect[0,32*i+j] = int(lineStr[j])
     return returnVect
+
 
 def handwritingClassTest():
     hwLabels = []
@@ -140,22 +144,28 @@ def handwritingClassTest():
 
 
 if __name__ == "__main__":
-	group,labels=createDataSet()
-	#print("group",group)
-	#print("labels",labels)
+    group,labels=createDataSet()
+    # print("group",group)
+    # print("labels",labels)
 
-	print( classify0([0,0],group,labels,3) )
+    print( classify0([0,0],group,labels,3) )
 
-	datingDataMat,datingLabels=file2matrix('datingTestSet.txt')
-	#print("datingLabels",datingLabels)
-	'''
-	fig=plt.figure()
-	ax=fig.add_subplot(111)
-	ax.scatter(datingDataMat[:,1],datingDataMat[:,2],15*array(datingLabels),15*array(datingLabels))
-	plt.show()
-	'''
-	# the data test
-	#print(datingClassTest())
-	# print( classifyPerson() )
 
-	handwritingClassTest()
+    datingDataMat,datingLabels=file2matrix('datingTestSet.txt')
+    #print("datingLabels",datingLabels)
+
+    #using Matplotlib
+    '''
+    fig=plt.figure()
+    ax=fig.add_subplot(111)  #111”表示“1×1网格，第一子图”，“234”表示“2×3网格，第四子图”。
+    ax.scatter(datingDataMat[:,1],datingDataMat[:,2],15*array(datingLabels),15*array(datingLabels)) # scatter
+    plt.show()
+    '''
+
+
+    # the data test
+    #print(datingClassTest())
+
+    #print( classifyPerson() )
+
+    handwritingClassTest()

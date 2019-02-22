@@ -91,15 +91,28 @@ def createTree(dataSet,labels):
     return myTree                      
 
 
-
+def storeTree(inputTree,filename):
+    import pickle
+    fw = open(filename,'w')
+    pickle.dump(inputTree,fw)
+    fw.close()
+    
+def grabTree(filename):
+    import pickle
+    fr = open(filename)
+    return pickle.load(fr)
+    
 
 if __name__ == "__main__":
     myDat,labels=createDataSet()
-    print ( calcShannonEnt(myDat) )
+    #print ( calcShannonEnt(myDat) )
 
     #myDat[0][-1]='maybe'
     #print ( calcShannonEnt(myDat) )
 
     # print ( splitDataSet(myDat,0,1))
 
-    print ( chooseBestFeatureToSplit(myDat) )
+    #print ( chooseBestFeatureToSplit(myDat) )
+
+    myTree=createTree(myDat,labels)
+    #print ("myTree",myTree)
