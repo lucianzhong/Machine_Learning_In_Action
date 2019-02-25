@@ -1,7 +1,9 @@
-1. KNN  计算距离分类
+2. KNN  计算距离分类
 
-2. Decision Tree: 按照计算的熵分类
+3. Decision Tree: 按照计算的熵分类
 
-3. Naive Bayes: 计算条件概率，选择高概率的决策
+4. Naive Bayes: 计算条件概率，选择高概率的决策
+
+5. Logistic Regression/逻辑回归：更具梯度上升的方法，拟合数据，分类数据
 
 

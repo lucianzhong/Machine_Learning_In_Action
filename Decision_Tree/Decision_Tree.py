@@ -17,32 +17,40 @@ def createDataSet():
     #change to discrete values
     return dataSet, labels
 
+
+#计算香农熵
 def calcShannonEnt(dataSet):
     numEntries = len(dataSet)
-    labelCounts = {}
+    #print("numEntries",numEntries)
+    labelCounts = {}  #字典数据结构，键为label
     for featVec in dataSet: #the the number of unique elements and their occurance
-        currentLabel = featVec[-1]
+        currentLabel = featVec[-1] # myDat [[1, 1, 'yes'], [1, 1, 'yes'], [1, 0, 'no'], [0, 1, 'no'], [0, 1, 'no']]
         if currentLabel not in labelCounts.keys(): labelCounts[currentLabel] = 0
         labelCounts[currentLabel] += 1
+
+    #print("labelCounts",labelCounts)
+
     shannonEnt = 0.0
+
     for key in labelCounts:
         prob = float(labelCounts[key])/numEntries
         shannonEnt -= prob * log(prob,2) #log base 2
     return shannonEnt
 
-
-
+# 划分数据集
+# 待分数据，划分数据集特征，特征返回值
 def splitDataSet(dataSet, axis, value):
     retDataSet = []
     for featVec in dataSet:
+    	#print("featVec",featVec)
         if featVec[axis] == value:
             reducedFeatVec = featVec[:axis]     #chop out axis used for splitting
             reducedFeatVec.extend(featVec[axis+1:])
-            retDataSet.append(reducedFeatVec)
+            retDataSet.append(reducedFeatVec)  # the difference between 'extend' and 'append'
     return retDataSet
 
 
-
+# choose the best split based on max entropy
 def chooseBestFeatureToSplit(dataSet):
     numFeatures = len(dataSet[0]) - 1      #the last column is used for the labels
     baseEntropy = calcShannonEnt(dataSet)
@@ -105,14 +113,20 @@ def grabTree(filename):
 
 if __name__ == "__main__":
     myDat,labels=createDataSet()
-    #print ( calcShannonEnt(myDat) )
+    #print("myDat",myDat)
+    #print("labels",labels)
 
-    #myDat[0][-1]='maybe'
-    #print ( calcShannonEnt(myDat) )
 
-    # print ( splitDataSet(myDat,0,1))
+    print ( calcShannonEnt(myDat) )  #0.9709505944546686,
+
+
+    myDat[0][-1]='maybe'
+    print ( calcShannonEnt(myDat) )  #1.37095059445  熵越高，混合的数据越多
+
+
+    print ( splitDataSet(myDat,0,1))
 
     #print ( chooseBestFeatureToSplit(myDat) )
 
     myTree=createTree(myDat,labels)
-    #print ("myTree",myTree)
+    print ("myTree",myTree)
