@@ -89,8 +89,6 @@ def majorityCnt(classList):
     sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
     return sortedClassCount[0][0]
 
-
-
 # 如果数据集的最后一列的第一个值出现的次数=整个集合的数量，也就说只有一个类别，就只直接返回结果就行
 # 第一个停止条件：所有的类标签完全相同，则直接返回该类标签。
 # count() 函数是统计括号中的值在list中出现的次数

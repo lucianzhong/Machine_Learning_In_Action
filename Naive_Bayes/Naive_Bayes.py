@@ -14,18 +14,18 @@ def loadDataSet():
                   ['stop', 'posting', 'stupid', 'worthless', 'garbage'],
                   ['mr', 'licks', 'ate', 'my', 'steak', 'how', 'to', 'stop', 'him'],
                   ['quit', 'buying', 'worthless', 'dog', 'food', 'stupid'] ]
-    classVec = [0,1,0,1,0,1]    #1 is abusive, 0 not
+    classVec = [0,1,0,1,0,1]    #1 is abusive, 0 not  #1,侮辱  0,正常
     return postingList,classVec
 
-
-# 不重复的词列表
+# 创建词汇表, 不重复的词列表
 def createVocabList(dataSet):
     vocabSet = set([])  #create empty set  #set() 函数创建一个无序不重复元素集，可进行关系测试，删除重复数据，还可以计算交集、差集、并集等
     for document in dataSet:
         vocabSet = vocabSet | set(document) #union of the two sets
     return list(vocabSet)
 
-# the world is in the vacabulary or not
+# 构造文档向量, the world is in the vacabulary or not
+# 统计的单词是否在词库中出现频率
 def setOfWords2Vec(vocabList, inputSet):
     returnVec = [0]*len(vocabList)
     for word in inputSet:
@@ -37,10 +37,11 @@ def setOfWords2Vec(vocabList, inputSet):
 
 
 #计算概率
-def trainNB0(trainMatrix,trainCategory):
-    numTrainDocs = len(trainMatrix)
-    numWords = len(trainMatrix[0])
-    pAbusive = sum(trainCategory)/float(numTrainDocs)
+#朴素贝叶斯分类器训练集
+def trainNB0(trainMatrix,trainCategory):                 #传入参数为文档矩阵，每篇文档类别标签所构成的向量
+    numTrainDocs = len(trainMatrix)                      #文档矩阵的长度
+    numWords = len(trainMatrix[0])                       #第一个文档的单词个数
+    pAbusive = sum(trainCategory)/float(numTrainDocs)    #任意文档属于侮辱性文档概率
     p0Num = ones(numWords); p1Num = ones(numWords)      #change to ones() 
     p0Denom = 2.0; p1Denom = 2.0                        #change to 2.0
     for i in range(numTrainDocs):
@@ -57,7 +58,7 @@ def trainNB0(trainMatrix,trainCategory):
 
 #元素相乘
 def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
-    p1 = sum(vec2Classify * p1Vec) + log(pClass1)    #element-wise mult
+    p1 = sum(vec2Classify * p1Vec) + log(pClass1)    #element-wise mult  #元素相乘
     p0 = sum(vec2Classify * p0Vec) + log(1.0 - pClass1)
     if p1 > p0:
         return 1
@@ -67,12 +68,12 @@ def classifyNB(vec2Classify, p0Vec, p1Vec, pClass1):
 
 
 def testingNB():
-    listOPosts,listClasses = loadDataSet()
-    myVocabList = createVocabList(listOPosts)
-    trainMat=[]
+    listOPosts,listClasses = loadDataSet()                #产生文档矩阵和对应的标签
+    myVocabList = createVocabList(listOPosts)             #创建并集
+    trainMat=[]                                           #创建一个空的列表
     for postinDoc in listOPosts:
-        trainMat.append(setOfWords2Vec(myVocabList, postinDoc))
-    p0V,p1V,pAb = trainNB0(array(trainMat),array(listClasses))
+        trainMat.append(setOfWords2Vec(myVocabList, postinDoc))         #使用词向量来填充trainMat列表
+    p0V,p1V,pAb = trainNB0(array(trainMat),array(listClasses))          #训练函数
     testEntry = ['love', 'my', 'dalmation']
     thisDoc = array(setOfWords2Vec(myVocabList, testEntry))
     print ( testEntry,'classified as: ',classifyNB(thisDoc,p0V,p1V,pAb) )
@@ -82,6 +83,7 @@ def testingNB():
 
 
 #词袋模型
+#统计侮辱性email出现概率，侮辱性邮件各单词出现的概率，非侮辱性email各单词出现概率
 def bagOfWords2VecMN(vocabList, inputSet):
     returnVec = [0]*len(vocabList)
     for word in inputSet:
@@ -138,11 +140,10 @@ def spamTest():
 if __name__ == "__main__":
     listOPosts,listClasses=loadDataSet()
     myVocabList=createVocabList(listOPosts)
-    #print("myVocabList",myVocabList)
+    print("myVocabList",myVocabList)
 
     setOfWords2Vec(myVocabList,listOPosts[0])
-
-    #print("listOPosts[0]",listOPosts[0])
+    print("listOPosts[0]",listOPosts)
 
 
     trainMat=[]
