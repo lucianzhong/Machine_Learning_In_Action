@@ -1,0 +1,78 @@
+digraph {
+	tearRate [label=tearRate]
+	tearRatereduced [label=reduced]
+	tearRate -> tearRatereduced
+	tearRatereduced [label=reduced]
+	"tearRatereducedno lenses" [label="no lenses"]
+	tearRatereduced -> "tearRatereducedno lenses"
+	tearRatenormal [label=normal]
+	tearRate -> tearRatenormal
+	tearRatenormal [label=normal]
+	tearRatenormalastigmatic [label=astigmatic]
+	tearRatenormal -> tearRatenormalastigmatic
+	tearRatenormalastigmatic [label=astigmatic]
+	tearRatenormalastigmaticyes [label=yes]
+	tearRatenormalastigmatic -> tearRatenormalastigmaticyes
+	tearRatenormalastigmaticyes [label=yes]
+	tearRatenormalastigmaticyesprescript [label=prescript]
+	tearRatenormalastigmaticyes -> tearRatenormalastigmaticyesprescript
+	tearRatenormalastigmaticyesprescript [label=prescript]
+	tearRatenormalastigmaticyesprescripthyper [label=hyper]
+	tearRatenormalastigmaticyesprescript -> tearRatenormalastigmaticyesprescripthyper
+	tearRatenormalastigmaticyesprescripthyper [label=hyper]
+	tearRatenormalastigmaticyesprescripthyperage [label=age]
+	tearRatenormalastigmaticyesprescripthyper -> tearRatenormalastigmaticyesprescripthyperage
+	tearRatenormalastigmaticyesprescripthyperage [label=age]
+	tearRatenormalastigmaticyesprescripthyperagepre [label=pre]
+	tearRatenormalastigmaticyesprescripthyperage -> tearRatenormalastigmaticyesprescripthyperagepre
+	tearRatenormalastigmaticyesprescripthyperagepre [label=pre]
+	"tearRatenormalastigmaticyesprescripthyperagepreno lenses" [label="no lenses"]
+	tearRatenormalastigmaticyesprescripthyperagepre -> "tearRatenormalastigmaticyesprescripthyperagepreno lenses"
+	tearRatenormalastigmaticyesprescripthyperagepresbyopic [label=presbyopic]
+	tearRatenormalastigmaticyesprescripthyperage -> tearRatenormalastigmaticyesprescripthyperagepresbyopic
+	tearRatenormalastigmaticyesprescripthyperagepresbyopic [label=presbyopic]
+	"tearRatenormalastigmaticyesprescripthyperagepresbyopicno lenses" [label="no lenses"]
+	tearRatenormalastigmaticyesprescripthyperagepresbyopic -> "tearRatenormalastigmaticyesprescripthyperagepresbyopicno lenses"
+	tearRatenormalastigmaticyesprescripthyperageyoung [label=young]
+	tearRatenormalastigmaticyesprescripthyperage -> tearRatenormalastigmaticyesprescripthyperageyoung
+	tearRatenormalastigmaticyesprescripthyperageyoung [label=young]
+	tearRatenormalastigmaticyesprescripthyperageyounghard [label=hard]
+	tearRatenormalastigmaticyesprescripthyperageyoung -> tearRatenormalastigmaticyesprescripthyperageyounghard
+	tearRatenormalastigmaticyesprescriptmyope [label=myope]
+	tearRatenormalastigmaticyesprescript -> tearRatenormalastigmaticyesprescriptmyope
+	tearRatenormalastigmaticyesprescriptmyope [label=myope]
+	tearRatenormalastigmaticyesprescriptmyopehard [label=hard]
+	tearRatenormalastigmaticyesprescriptmyope -> tearRatenormalastigmaticyesprescriptmyopehard
+	tearRatenormalastigmaticno [label=no]
+	tearRatenormalastigmatic -> tearRatenormalastigmaticno
+	tearRatenormalastigmaticno [label=no]
+	tearRatenormalastigmaticnoage [label=age]
+	tearRatenormalastigmaticno -> tearRatenormalastigmaticnoage
+	tearRatenormalastigmaticnoage [label=age]
+	tearRatenormalastigmaticnoagepre [label=pre]
+	tearRatenormalastigmaticnoage -> tearRatenormalastigmaticnoagepre
+	tearRatenormalastigmaticnoagepre [label=pre]
+	tearRatenormalastigmaticnoagepresoft [label=soft]
+	tearRatenormalastigmaticnoagepre -> tearRatenormalastigmaticnoagepresoft
+	tearRatenormalastigmaticnoagepresbyopic [label=presbyopic]
+	tearRatenormalastigmaticnoage -> tearRatenormalastigmaticnoagepresbyopic
+	tearRatenormalastigmaticnoagepresbyopic [label=presbyopic]
+	tearRatenormalastigmaticnoagepresbyopicprescript [label=prescript]
+	tearRatenormalastigmaticnoagepresbyopic -> tearRatenormalastigmaticnoagepresbyopicprescript
+	tearRatenormalastigmaticnoagepresbyopicprescript [label=prescript]
+	tearRatenormalastigmaticnoagepresbyopicprescripthyper [label=hyper]
+	tearRatenormalastigmaticnoagepresbyopicprescript -> tearRatenormalastigmaticnoagepresbyopicprescripthyper
+	tearRatenormalastigmaticnoagepresbyopicprescripthyper [label=hyper]
+	tearRatenormalastigmaticnoagepresbyopicprescripthypersoft [label=soft]
+	tearRatenormalastigmaticnoagepresbyopicprescripthyper -> tearRatenormalastigmaticnoagepresbyopicprescripthypersoft
+	tearRatenormalastigmaticnoagepresbyopicprescriptmyope [label=myope]
+	tearRatenormalastigmaticnoagepresbyopicprescript -> tearRatenormalastigmaticnoagepresbyopicprescriptmyope
+	tearRatenormalastigmaticnoagepresbyopicprescriptmyope [label=myope]
+	"tearRatenormalastigmaticnoagepresbyopicprescriptmyopeno lenses" [label="no lenses"]
+	tearRatenormalastigmaticnoagepresbyopicprescriptmyope -> "tearRatenormalastigmaticnoagepresbyopicprescriptmyopeno lenses"
+	tearRatenormalastigmaticnoageyoung [label=young]
+	tearRatenormalastigmaticnoage -> tearRatenormalastigmaticnoageyoung
+	tearRatenormalastigmaticnoageyoung [label=young]
+	tearRatenormalastigmaticnoageyoungsoft [label=soft]
+	tearRatenormalastigmaticnoageyoung -> tearRatenormalastigmaticnoageyoungsoft
+}
