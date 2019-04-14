@@ -24,10 +24,11 @@ def classify0(inX, dataSet, labels, k):
     dataSetSize = dataSet.shape[0]  # (4*2 the shape of dataSet)
     #print("dataSetSize",dataSet.shape)
     diffMat = tile(inX, (dataSetSize,1)) - dataSet  #numpy.tile([0,0],(2,1))#在列方向上重复[0,0]1次，行2次,array([[0, 0],[0, 0]])
-    #print("diffMat",tile(inX, (dataSetSize,1)))
+    #print("diffMat",diffMat)
     sqDiffMat = diffMat**2
     sqDistances = sqDiffMat.sum(axis=1) #axis=1以后就是将一个矩阵的每一行向量相加
     distances = sqDistances**0.5
+    #print("distances",distances)
     sortedDistIndicies = distances.argsort() #argsort函数返回的是数组值从小到大的索引值
     #print("sortedDistIndicies",sortedDistIndicies)
     classCount={}   #dirctionary
@@ -39,6 +40,7 @@ def classify0(inX, dataSet, labels, k):
     sortedClassCount = sorted(classCount.iteritems(), key=operator.itemgetter(1), reverse=True)
     #print("sortedClassCount",sortedClassCount)
     return sortedClassCount[0][0]
+
 
 # txt file to array
 def file2matrix(filename):
@@ -88,15 +90,15 @@ def datingClassTest():
 
 #the classify a person based on inputs
 def classifyPerson():
-	resultList=['not at all','in small doses','in large doses']
-	percentTats=float(raw_input("percentage of time playing video game?"))
-	ffile=float(raw_input("frequent flier miles earned per year ?"))
-	icecream=float(raw_input("ice cream consumed per year ?"))
-	datingDataMat,datingLabels = file2matrix('datingTestSet.txt')       #load data setfrom file
-	normMat, ranges, minVals = autoNorm(datingDataMat)
-	inArr=array([percentTats,ffile,icecream])
-	classification_result=classify0( (inArr-minVals) / ranges, normMat, datingLabels, 3 )
-	return ( "how much you like the person",resultList[classification_result-1])
+    resultList=['not at all','in small doses','in large doses']
+    percentTats=float(raw_input("percentage of time playing video game?"))
+    ffile=float(raw_input("frequent flier miles earned per year ?"))
+    icecream=float(raw_input("ice cream consumed per year ?"))
+    datingDataMat,datingLabels = file2matrix('datingTestSet.txt')       #load data setfrom file
+    normMat, ranges, minVals = autoNorm(datingDataMat)
+    inArr=array([percentTats,ffile,icecream])
+    classification_result=classify0( (inArr-minVals) / ranges, normMat, datingLabels, 3 )
+    return ( "how much you like the person",resultList[classification_result-1])
 
 
 
@@ -144,28 +146,32 @@ def handwritingClassTest():
 
 
 if __name__ == "__main__":
+
+    """
+    # the bacis KNN algorithm
     group,labels=createDataSet()
     # print("group",group)
     # print("labels",labels)
-
     print( classify0([0,0],group,labels,3) )
-
-
+    """
+    
+    """
+    #Read data from .txt file
     datingDataMat,datingLabels=file2matrix('datingTestSet.txt')
     #print("datingLabels",datingLabels)
-
-    #using Matplotlib
-    '''
+    #using Matplotlib    
     fig=plt.figure()
     ax=fig.add_subplot(111)  #111”表示“1×1网格，第一子图”，“234”表示“2×3网格，第四子图”。
     ax.scatter(datingDataMat[:,1],datingDataMat[:,2],15*array(datingLabels),15*array(datingLabels)) # scatter
     plt.show()
-    '''
+
+   
 
 
     # the data test
-    #print(datingClassTest())
+    print(datingClassTest())
 
     #print( classifyPerson() )
+    """
 
-    handwritingClassTest()
+    #handwritingClassTest()
