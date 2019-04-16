@@ -1,0 +1,68 @@
+digraph {
+	spInd [label=spInd]
+	spInd1 [label=1]
+	spInd -> spInd1
+	spVal [label=spVal]
+	"spVal0.39435" [label=0.39435]
+	spVal -> "spVal0.39435"
+	right [label=right]
+	rightspInd [label=spInd]
+	right -> rightspInd
+	rightspInd [label=spInd]
+	rightspInd1 [label=1]
+	rightspInd -> rightspInd1
+	rightspVal [label=spVal]
+	right -> rightspVal
+	rightspVal [label=spVal]
+	"rightspVal0.197834" [label=0.197834]
+	rightspVal -> "rightspVal0.197834"
+	rightright [label=right]
+	right -> rightright
+	rightright [label=right]
+	"rightright-0.0238381555556" [label=-0.0238381555556]
+	rightright -> "rightright-0.0238381555556"
+	rightleft [label=left]
+	right -> rightleft
+	rightleft [label=left]
+	"rightleft1.02895836667" [label=1.02895836667]
+	rightleft -> "rightleft1.02895836667"
+	left [label=left]
+	leftspInd [label=spInd]
+	left -> leftspInd
+	leftspInd [label=spInd]
+	leftspInd1 [label=1]
+	leftspInd -> leftspInd1
+	leftspVal [label=spVal]
+	left -> leftspVal
+	leftspVal [label=spVal]
+	"leftspVal0.582002" [label=0.582002]
+	leftspVal -> "leftspVal0.582002"
+	leftright [label=right]
+	left -> leftright
+	leftright [label=right]
+	"leftright1.98003507143" [label=1.98003507143]
+	leftright -> "leftright1.98003507143"
+	leftleft [label=left]
+	left -> leftleft
+	leftleft [label=left]
+	leftleftspInd [label=spInd]
+	leftleft -> leftleftspInd
+	leftleftspInd [label=spInd]
+	leftleftspInd1 [label=1]
+	leftleftspInd -> leftleftspInd1
+	leftleftspVal [label=spVal]
+	leftleft -> leftleftspVal
+	leftleftspVal [label=spVal]
+	"leftleftspVal0.797583" [label=0.797583]
+	leftleftspVal -> "leftleftspVal0.797583"
+	leftleftright [label=right]
+	leftleft -> leftleftright
+	leftleftright [label=right]
+	"leftleftright2.98362095349" [label=2.98362095349]
+	leftleftright -> "leftleftright2.98362095349"
+	leftleftleft [label=left]
+	leftleft -> leftleftleft
+	leftleftleft [label=left]
+	"leftleftleft3.9871632" [label=3.9871632]
+	leftleftleft -> "leftleftleft3.9871632"
+}

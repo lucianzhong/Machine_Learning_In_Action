@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     testingNB()
 
-    # spamTest()
+    spamTest()
     """
         trainMat=[]
     for postinDoc in listOPosts:

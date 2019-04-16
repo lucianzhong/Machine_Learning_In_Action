@@ -18,6 +18,7 @@ def loadDataSet(fileName):
 
 
 
+
 '''
   创建一个alpha向量并将其初始化为0向量
   当迭代次数小于最大迭代次数时（外循环）
@@ -325,9 +326,18 @@ def testDigits(kTup=('rbf', 10)):
 
 
 
-
+#####################################################################################################################################
 if __name__ == "__main__":
     dataArr,labelArr=loadDataSet('testSet.txt')
+    print("dataArr",dataArr)
+    datMat=mat(dataArr)
+    print("datMat",datMat)
+    plt.figure()
+    plt.plot(datMat[:,0],datMat[:,1],'.')
+    plt.show()
+
+
+
     #print("dataArr",dataArr)
 
     # the SMO simple example
