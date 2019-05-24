@@ -1,4 +1,27 @@
 #-*- coding: utf-8 -*-
+
+"""
+优点:结果易于理解,计算上不复杂。
+缺点:对非线性的数据拟合不好。
+适用数据类型:数值型和标称型数据。
+
+
+与分类一样,回归也是预测目标值的过程。回归与分类的不同点在于,前者预测连续型变量,
+而后者预测离散型变量。回归是统计学中最有力的工具之一。在回归方程里,求得特征对应的最
+佳回归系数的方法是最小化误差的平方和。给定输入矩阵 X ,如果 X T X 的逆存在并可以求得的话,
+回归法都可以直接使用。数据集上计算出的回归方程并不一定意味着它是最佳的,可以使用预测
+值 yHat 和原始值 y 的相关性来度量回归方程的好坏。
+当数据的样本数比特征数还少时候,矩阵 X T X 的逆不能直接计算。即便当样本数比特征数多
+时, X T X 的逆仍有可能无法直接计算,这是因为特征有可能高度相关。这时可以考虑使用岭回归,
+因为当 X T X 的逆不能计算时,它仍保证能求得回归参数。
+岭回归是缩减法的一种,相当于对回归系数的大小施加了限制。另一种很好的缩减法是lasso。
+Lasso难以求解,但可以使用计算简便的逐步线性回归方法来求得近似结果。
+缩减法还可以看做是对一个模型增加偏差的同时减少方差。偏差方差折中是一个重要的概
+念,可以帮助我们理解现有模型并做出改进,从而得到更好的模型。
+
+"""
+
+
 from numpy import *
 import operator    
 from os import listdir
@@ -23,6 +46,11 @@ def loadDataSet(fileName):      #general function to parse tab -delimited floats
         labelMat.append(float(curLine[-1]))
     return dataMat,labelMat
 
+"""
+用来计算最佳拟合直线。该函数首先读入 x 和 y 并将它们保存到矩阵中;然后计算 X T X ,然后判断它的行列式是否为零,如果行列式为零,那么计算逆矩阵的时候将出现错误。NumPy提供一个线性代数的
+库linalg,其中包含很多有用的函数。可以直接调用 linalg.det() 来计算行列式。最后,如果行列式非零,计算并返回 w 。如果没有检查行列式是否为零就试图计算矩阵的逆,将会出现错误。
+NumPy的线性代数库还提供一个函数来解未知矩阵,如果使用该函数,那么代码 ws=xTx.I *(xMat.T*yMat) 应写成 ws=linalg.solve(xTx, xMat.T*yMatT) 
+"""
 #标准回归函数
 def standRegres(xArr,yArr):
     xMat = mat(xArr);
@@ -33,12 +61,14 @@ def standRegres(xArr,yArr):
         return
     ws = xTx.I * (xMat.T*yMat)
     return ws
+
+
 #标准回归函数
 def result_of_standRegres():
 	xArr,yArr=loadDataSet('ex0.txt')
 	ws= standRegres(xArr,yArr) 
 	print("ws  ",ws)
-	xMat=mat(xArr)
+	xMat=mat(xArr)         # 转换为 NumPy 矩 阵数据类型
 	yMat=mat(yArr)
 	fig=plt.figure()
 	ax=fig.add_subplot(111)
@@ -57,14 +87,15 @@ def result_of_standRegres():
 #模型欠拟合将不能有好的预测结果，所以有些方法允许在估计中引入一些偏差，从而降低预测的均方误差。 
 #中一个方法是局部加权线性回归（LWLR），我们给待预测点附近的每个点赋予一定的权重，然后在这个子集上基于最小均值方差来进行普通的回归。每次预测均需要事先选取出对应的数据子集
 # w = (X^T WX)^-1 * X^TWy
+
 def lwlr(testPoint,xArr,yArr,k=1.0):
     xMat = mat(xArr);
     yMat = mat(yArr).T
     m = shape(xMat)[0]
-    weights = mat(eye((m)))                     #创建对角权重矩阵
+    weights = mat(eye((m)))                     #创建对角权重矩阵 / 权重矩阵是一个方阵,阶数等于样本点个数
     for j in range(m):                          #next 2 lines create weights matrix
         diffMat = testPoint - xMat[j,:]    
-        weights[j,j] = exp(diffMat*diffMat.T/(-2.0*k**2))       #权重大小以指数级衰减
+        weights[j,j] = exp(diffMat*diffMat.T/(-2.0*k**2))       # 随着样本点与待预测点距离的递增,权重将以指数级衰减
     xTx = xMat.T * (weights * xMat)
     if linalg.det(xTx) == 0.0:
         print ("This matrix is singular, cannot do inverse")
@@ -109,11 +140,17 @@ def rssError_result():
     error_10 = rssError(abY[0:99],yHat10.T )
 
     print("error_01,error_1,error_10  ",error_01,error_1,error_10)
+    # 从上述结果可以看到,在上面的三个参数中,核大小等于10时的测试误差最小,但它在训练集上的误差却是最大的
+
 
 ######################################################################################################################
-#岭回归
-#给定lamda数值的情况下，计算回归系数
-def ridgeRegres(xMat,yMat,lam=0.2):
+# 岭回归
+# 如果特征比样本点还多( n > m ),也就是说输入数据的矩阵 X 不是满秩矩阵。非满秩矩阵在求逆时会出现问题。为了解决这个问题,统计学家引入了岭回归(ridge regression)的概念
+# 给定lamda数值的情况下，计算回归系数
+# 岭回归就是在矩阵 X T X 上加一个λ I 从而使得矩阵非奇异,进而能对 X T X + λ I 求逆
+# 首先构建矩阵 X T X ,然后用 lam 乘以单位矩阵(可调用NumPy库中的方法 eye() 来生成)
+
+def ridgeRegres(xMat,yMat,lam=0.2):  # 如果没指定lambda,则默认为0.2。由于lambda是Python保留的关键字,因此程序中使用了 lam 来代替
     xTx = xMat.T*xMat
     denom = xTx + eye(shape(xMat)[1])*lam
     if linalg.det(denom) == 0.0:
@@ -126,7 +163,7 @@ def ridgeRegres(xMat,yMat,lam=0.2):
 def ridgeTest(xArr,yArr):
     xMat = mat(xArr); 
     yMat=mat(yArr).T
-    yMean = mean(yMat,0) #所有元素的平均值
+    yMean = mean(yMat,0)    #所有元素的平均值
     yMat = yMat - yMean     #to eliminate X0 take mean off of Y
     #regularize X's
     xMeans = mean(xMat,0)   #calc mean then subtract it off

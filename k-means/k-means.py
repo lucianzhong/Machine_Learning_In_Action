@@ -1,4 +1,30 @@
 #-*- coding: utf-8 -*-
+
+"""
+聚类是一种无监督的学习,它将相似的对象归到同一个簇中。它有点像全自动分类 2 。聚类
+方法几乎可以应用于所有对象,簇内的对象越相似,聚类的效果越好。本章要学习一种称为K-
+均值(K-means)聚类的算法。之所以称之为K-均值是因为它可以发现k个不同的簇,且每个簇的
+中心采用簇中所含值的均值计算而成
+
+
+优点:容易实现。
+缺点:可能收敛到局部最小值,在大规模数据集上收敛较慢。
+适用数据类型:数值型数据
+
+K-均值是发现给定数据集的k个簇的算法。簇个数k是用户给定的,每一个簇通过其质心
+(centroid),即簇中所有点的中心来描述。
+K-均值算法的工作流程是这样的。首先,随机确定k个初始点作为质心。然后将数据集中的
+每个点分配到一个簇中,具体来讲,为每个点找距其最近的质心,并将其分配给该质心所对应的
+簇。这一步完成之后,每个簇的质心更新为该簇所有点的平均值
+
+为克服K-均值算法收敛于局部最小值的问题,有人提出了另一个称为二分K-均值(bisecting
+K-means)的算法。该算法首先将所有点作为一个簇,然后将该簇一分为二。之后选择其中一个
+簇继续进行划分,选择哪一个簇进行划分取决于对其划分是否可以最大程度降低SSE的值。上述
+基于SSE的划分过程不断重复,直到得到用户指定的簇数目为止
+
+"""
+
+
 from numpy import *
 import operator    
 from os import listdir
@@ -17,7 +43,6 @@ def loadDataSet(fileName):      #general function to parse tab -delimited floats
         dataMat.append(fltLine)
     return dataMat
 
-
 #计算欧式距离
 def distEclud(vecA, vecB):
     return sqrt(sum(power(vecA - vecB, 2))) #la.norm(vecA-vecB)
@@ -30,7 +55,7 @@ def randCent(dataSet, k):
     n = shape(dataSet)[1]
     #print("n",n)
     centroids = mat(zeros((k,n)))#create centroid mat
-    for j in range(n):#create random cluster centers, within bounds of each dimension
+    for j in range(n):# 构建簇质心 / create random cluster centers, within bounds of each dimension
         minJ = min(dataSet[:,j])        
         rangeJ = float(max(dataSet[:,j]) - minJ)                    # 范围 = 最大值 - 最小值
         centroids[:,j] = mat(minJ + rangeJ * random.rand(k,1))      # 随机生成   [:,0] the first colume
@@ -38,12 +63,15 @@ def randCent(dataSet, k):
 
 
 # 算法会创建k个质心，然后将每个点分配到最近的质心，再重新计算质心。重复迭代，直到数据点的簇分配结点不再改变直到质心不再改变
+# kMeans() 函数接受4个输入参数。只有数据集及簇的数目是必选参数,而用来计算距离和创建初始质心的函数都是可选的
+# kMeans() 函数一开始确定数据集中数据点的总数,然后创建一个矩阵来存储每个点的簇分配结果。簇分配结果矩阵 clusterAssment包含两列:一列记录簇索引值,第二列存储误差。这里的误差是指当前点到簇质心的距离,后边会使用该误差来评价聚类的效果。
+
 def kMeans(dataSet, k, distMeas=distEclud, createCent=randCent):
     m = shape(dataSet)[0]                   # 行数
     clusterAssment = mat(zeros((m,2)))      #create mat to assign data points  to a centroid, also holds SE of each point
     centroids = createCent(dataSet, k)      # 创建质心，随机k个质心
     print("centroids",centroids)
-    clusterChanged = True 
+    clusterChanged = True   # 如果任一点的簇分配结果发生改变,则更新 clusterChanged 标志
     while clusterChanged:
         clusterChanged = False
         for i in range(m):                  #循环每一个数据点并分配到最近的质心中去
@@ -57,6 +85,7 @@ def kMeans(dataSet, k, distMeas=distEclud, createCent=randCent):
             if clusterAssment[i,0] != minIndex: clusterChanged = True   # 簇分配结果改变
             clusterAssment[i,:] = minIndex,minDist**2                   # 更新簇分配结果为最小质心的 index（索引），minDist（最小距离）的平方
         #print (centroids)
+        # 首先通过数组过滤来获得给定簇的所有点;然后计算所有点的均值,选项 axis = 0 表示沿矩阵的列方向进行均值计算;最后,程序返回所有的类质心与点分配结果
         for cent in range(k):                                                   # re-calculate centroids  # 更新质心
             ptsInClust = dataSet[nonzero(clusterAssment[:,0].A==cent)[0]]       #get all the point in this cluster,   # 获取该簇中的所有点
             centroids[cent,:] = mean(ptsInClust, axis=0)                        #assign centroid to mean,# 将质心修改为簇中所有点的平均值，mean 就是求平均值的
@@ -80,13 +109,14 @@ def kMeans(dataSet, k, distMeas=distEclud, createCent=randCent):
 def biKmeans(dataSet, k, distMeas=distEclud):
     m = shape(dataSet)[0]
     clusterAssment = mat(zeros((m,2)))
-    centroid0 = mean(dataSet, axis=0).tolist()[0]   # 质心初始化为所有数据点的均值  #tolist(),将数组或者矩阵转换成列表 
+    centroid0 = mean(dataSet, axis=0).tolist()[0]   # 创建一个初始簇 / 质心初始化为所有数据点的均值  #tolist(),将数组或者矩阵转换成列表 
     #print("centroid0",centroid0)
     centList =[centroid0]                           #create a list with one centroid   # 初始化只有 1 个质心的 list
     for j in range(m):                              #calc initial Error   # 计算所有数据点到初始质心的距离平方误差
         clusterAssment[j,1] = distMeas(mat(centroid0), dataSet[j,:])**2   # 保存每个数据点的簇分配结果和平方误差
     while (len(centList) < k):  # 当质心数量小于 k 时
         lowestSSE = inf
+        # 尝试划分每一簇
         for i in range(len(centList)):                                             # 对每一个质心
             ptsInCurrCluster = dataSet[nonzero(clusterAssment[:,0].A==i)[0],:]     #get the data points currently in cluster i   # 获取当前簇 i 下的所有数据点
             centroidMat,splitClustAss = kMeans(ptsInCurrCluster, 2, distMeas)      # 将当前簇 i 进行k-Means 处理
@@ -98,7 +128,7 @@ def biKmeans(dataSet, k, distMeas=distEclud):
                 bestNewCents = centroidMat
                 bestClustAss = splitClustAss.copy()
                 lowestSSE = sseSplit + sseNotSplit
-        # 找出最好的簇分配结果 
+        # 找出最好的簇分配结果 / 更新簇的分配结果
         bestClustAss[nonzero(bestClustAss[:,0].A == 1)[0],0] = len(centList)    #change 1 to 3,4, or whatever   # 调用二分 kMeans 的结果，默认簇是 0,1. 当然也可以改成其它的数字
         bestClustAss[nonzero(bestClustAss[:,0].A == 0)[0],0] = bestCentToSplit  # 更新为最佳质心
         #print ('the bestCentToSplit is: ',bestCentToSplit )
